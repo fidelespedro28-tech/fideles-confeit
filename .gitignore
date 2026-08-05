@@ -1,0 +1,26 @@
+# OS Files & Caches
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment & Credentials
+.env
+.env.*
+*.pem
+*.key
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+
+# Dependencies & Build artifacts
+node_modules/
+dist/
+build/
+.cache/
+
+# Agent & Brain Scratchpad / System Folders
+.agents/
+SEGUNDO CEREBRO/
+.system_generated/
