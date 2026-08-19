@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MÔNICA FIDELES — INTERACTIVE MOTION, GRAPHICS & HARDENED JS ENGINE
+   FIDELES CONFEITARIA: INTERACTIVE MOTION, GRAPHICS & JS ENGINE
    Stack: GSAP 3 + ScrollTrigger + Three.js + Performance & Security Safeguards
    ========================================================================== */
 
@@ -83,7 +83,7 @@ function initMobileNav() {
 }
 
 /* ==========================================================================
-   THREE.JS PARTICLES (GLOWING POWDER ATMOSPHERE — MOBILE OPTIMIZED)
+   THREE.JS PARTICLES (GLOWING POWDER ATMOSPHERE: MOBILE OPTIMIZED)
    ========================================================================== */
 let globalParticles = null;
 
