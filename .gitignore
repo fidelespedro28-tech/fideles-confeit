@@ -24,3 +24,6 @@ build/
 .agents/
 SEGUNDO CEREBRO/
 .system_generated/
+scratch/
+reports/*.html
+reports/*.report.json
