@@ -12,12 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Mobile Navigation Menu
   initMobileNav();
 
-  // Initialize Three.js Ambient Particle Atmosphere (Deferred after first paint)
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => initThreeAtmosphere(), { timeout: 2000 });
-  } else {
-    setTimeout(initThreeAtmosphere, 200);
-  }
+  // Initialize Three.js Ambient Particle Atmosphere (Post-load and idle deferred)
+  window.addEventListener('load', () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => initThreeAtmosphere(), { timeout: 3000 });
+    } else {
+      setTimeout(initThreeAtmosphere, 600);
+    }
+  });
 
   // Initialize GSAP Timelines & ScrollTrigger
   initGSAPAnimations();
@@ -113,7 +115,7 @@ function initThreeAtmosphere() {
 
   // Dynamic particle count based on screen width
   const isMobile = window.innerWidth < 768;
-  const particleCount = isMobile ? 32 : 80;
+  const particleCount = isMobile ? 16 : 80;
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(particleCount * 3);
 
