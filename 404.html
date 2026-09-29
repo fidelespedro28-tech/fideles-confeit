@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Página Não Encontrada (404) | FIDELES CONFEITARIA</title>
+  <meta name="robots" content="noindex, follow">
+  <meta name="description"
+    content="A página que você está procurando não existe ou mudou de endereço. Volte para a página inicial da FIDELES CONFEITARIA ou fale com a Mônica pelo WhatsApp.">
+  <link rel="canonical" href="https://fidelesconfeitaria.online/404.html">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238a0433'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
+
+  <!-- Resource Hints & Google Fonts (display=swap) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+
+  <style>
+    :root {
+      --bg-warm: #FAF6F4;
+      --bg-surface: #FFFFFF;
+      --bg-pink-blush: #FFF2F5;
+      --primary-wine: #8a0433;
+      --primary-wine-text: #80032e;
+      --text-main: #2D1B22;
+      --text-muted: #6E535E;
+      --accent-wine-border: rgba(138, 4, 51, 0.18);
+      --font-display: 'Oswald', sans-serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --shadow-card: 0 10px 28px -6px rgba(138, 4, 51, 0.09);
+      --shadow-pink-glow: 0 8px 22px rgba(138, 4, 51, 0.26);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-warm);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      padding: 24px;
+      text-align: center;
+      overflow-x: hidden !important;
+    }
+
+    .error-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--accent-wine-border);
+      border-radius: 24px;
+      padding: 48px 32px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .brand-eyebrow {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.875rem;
+      color: var(--primary-wine);
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--bg-pink-blush);
+      border: 1px solid rgba(138, 4, 51, 0.15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--primary-wine);
+    }
+
+    .error-code {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 5rem);
+      line-height: 1;
+      font-weight: 700;
+      color: var(--primary-wine);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .error-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 4vw, 1.85rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .error-desc {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .actions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 480px) {
+      .actions-grid {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: 9999px;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary-wine);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-pink-glow);
+      border: 1px solid transparent;
+    }
+
+    .btn-primary:hover {
+      background: #73032a;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-wine-text);
+      border: 1.5px solid var(--accent-wine-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-pink-blush);
+      border-color: var(--primary-wine);
+      transform: translateY(-2px);
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="error-card">
+    <div class="brand-eyebrow">
+      <span>FIDELES CONFEITARIA</span>
+    </div>
+
+    <div class="icon-badge" aria-hidden="true">
+      <!-- Fine Stroke SVG: Compass / Search Navigation -->
+      <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+      </svg>
+    </div>
+
+    <div class="error-code">404</div>
+    <h1 class="error-title">Página não encontrada</h1>
+    <p class="error-desc">
+      O endereço que você tentou acessar não existe ou foi alterado. Mas não se preocupe: as encomendas e os bolos artesanais da Mônica continuam a todo vapor!
+    </p>
+
+    <div class="actions-grid">
+      <a href="/" class="btn btn-primary" aria-label="Voltar para a página inicial da Fideles Confeitaria">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Voltar ao Início</span>
+      </a>
+
+      <a href="https://wa.me/5531973113229" target="_blank" rel="noopener noreferrer" class="btn btn-secondary"
+        aria-label="Falar com a Mônica pelo WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z" />
+          <path
+            d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.11 1.519 5.842L0 24l6.336-1.492C8.01 23.415 9.957 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.838 0-3.562-.486-5.064-1.334l-.363-.205-3.757.884.897-3.662-.224-.37A9.954 9.954 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+        </svg>
+        <span>Falar no WhatsApp</span>
+      </a>
+    </div>
+  </main>
+
+</body>
+
+</html>

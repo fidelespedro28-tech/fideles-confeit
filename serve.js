@@ -10,6 +10,8 @@ const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -38,6 +40,13 @@ const server = http.createServer((req, res) => {
 
     fs.stat(filePath, (err, stats) => {
       if (err || !stats.isFile()) {
+        const notFoundPath = path.join(ROOT, '404.html');
+        if (fs.existsSync(notFoundPath)) {
+          const content = fs.readFileSync(notFoundPath);
+          res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+          res.end(content);
+          return;
+        }
         res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end('<h1>404 Não Encontrado</h1><p>' + pathname + '</p>');
         return;

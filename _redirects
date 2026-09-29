@@ -1,0 +1,2 @@
+# Canonical 301 redirect: www to non-www
+https://www.fidelesconfeitaria.online/* https://fidelesconfeitaria.online/:splat 301

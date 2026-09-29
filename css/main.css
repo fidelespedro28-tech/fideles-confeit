@@ -2,8 +2,7 @@
    FIDELES CONFEITARIA: DESIGN SYSTEM & EDITORIAL STYLESHEET
    Stack: HTML5 + CSS3 + GSAP 3 + Three.js
    ========================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Alex+Brush&family=Barlow+Condensed:ital,wght@0,600;0,700;1,600&family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Oswald:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+/* Google Fonts loaded via <link> in HTML for zero render-blocking waterfall */
 
 :root {
   /* Brand Palette */

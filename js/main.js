@@ -12,8 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Mobile Navigation Menu
   initMobileNav();
 
-  // Initialize Three.js Ambient Particle Atmosphere
-  initThreeAtmosphere();
+  // Initialize Three.js Ambient Particle Atmosphere (Deferred after first paint)
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => initThreeAtmosphere(), { timeout: 2000 });
+  } else {
+    setTimeout(initThreeAtmosphere, 200);
+  }
 
   // Initialize GSAP Timelines & ScrollTrigger
   initGSAPAnimations();
@@ -91,9 +95,10 @@ function initThreeAtmosphere() {
   const canvas = document.getElementById('webgl-canvas');
   if (!canvas || typeof THREE === 'undefined') return;
 
-  // Check prefers-reduced-motion to save GPU/Battery if user requested reduced motion
+  // Check prefers-reduced-motion or Save-Data to save GPU/Battery/Network
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) {
+  const isSaveData = Boolean(navigator.connection && navigator.connection.saveData);
+  if (prefersReducedMotion || isSaveData) {
     canvas.style.display = 'none';
     return;
   }
@@ -104,11 +109,11 @@ function initThreeAtmosphere() {
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: window.devicePixelRatio <= 1 });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
   // Dynamic particle count based on screen width
   const isMobile = window.innerWidth < 768;
-  const particleCount = isMobile ? 65 : 130;
+  const particleCount = isMobile ? 32 : 80;
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(particleCount * 3);
 
