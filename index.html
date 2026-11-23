@@ -45,26 +45,21 @@
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238a0433'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
 
-  <!-- Resource Hints & CDNs -->
+  <!-- Preconnects & Font Preloads -->
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="https://wa.me">
   <link rel="dns-prefetch" href="https://www.instagram.com">
-
-  <!-- Font Preloads (Self-hosted Uncut Fraunces for H1 LCP) -->
   <link rel="preload" href="./fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
-
-  <!-- Locomotive Scroll 4.1.4 Stylesheet -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+  <link rel="preload" href="./assets/images/monica-fideles-segurando-bolo-hero-768.webp" as="image" fetchpriority="high">
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="./css/main.css">
 
-  <!-- Libraries: Three.js r128, GSAP 3, ScrollTrigger & Locomotive Scroll -->
+  <!-- Three.js r128 & GSAP 3 Deferred -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js" defer></script>
 
   <!-- Structured Data (Schema.org JSON-LD for LocalBusiness & Bakery) -->
   <script type="application/ld+json">
@@ -113,15 +108,15 @@
 
 <body>
 
-  <!-- Three.js Ambient Ateliê Multiplane Canvas -->
+  <!-- Three.js Ambient Powder Atmosphere Canvas (Background Only) -->
   <canvas id="webgl-canvas"></canvas>
 
-  <div class="site-wrapper" data-scroll-container>
+  <div class="site-wrapper">
 
     <!-- ==========================================
          HEADER / NAVIGATION
          ========================================== -->
-    <header class="main-header" role="banner" data-scroll-section>
+    <header class="main-header" role="banner">
       <div class="container header-container">
         <a href="#" class="brand-logo" aria-label="FIDELES CONFEITARIA Página Inicial">
           <span class="brand-title">FIDELES CONFEITARIA</span>
@@ -165,19 +160,21 @@
     <main id="main-content">
 
       <!-- ==========================================
-           HERO SECTION (3 CAMADAS: 3D ATELIÊ + TIPOGRAFIA + METADADOS)
+           HERO SECTION: MONUMENTAL EDITORIAL + MÔNICA CUTOUT SHOWCASE
            ========================================== -->
-      <section class="hero-section" data-scroll-section>
-        <div class="container hero-container-monumental">
-          <div class="hero-text-stage">
-            <div class="section-label hero-label">Confeitaria artesanal · João Monlevade, MG</div>
+      <section class="hero-section">
+        <div class="container hero-container-layout">
+          
+          <!-- Left Column: Monumental Copy & CTAs -->
+          <div class="hero-content-col">
+            <div class="section-label hero-label">Confeitaria artesanal • Desde 2015 • João Monlevade, MG</div>
 
             <h1 class="heading-display hero-headline">
-              Bolos que<br>marcam.
+              Bolos artesanais que <span class="highlight">marcam</span> suas celebrações.
             </h1>
 
             <p class="hero-description">
-              Desde 2015 criando bolos e doces exclusivos sob encomenda em João Monlevade, MG. Produção própria com ingredientes nobres e acabamento impecável para celebrar cada conquista.
+              Criações exclusivas sob encomenda da Mônica Fideles. Massas leves, recheios artesanais generosos e acabamento fino para tornar aniversários e momentos em família inesquecíveis.
             </p>
 
             <div class="hero-actions-group">
@@ -194,51 +191,74 @@
                 </a>
 
                 <a href="#galeria" class="btn-secondary" aria-label="Ver os bolos da galeria">
-                  <span>Ver os bolos</span>
+                  <span>Ver Criações em 3D</span>
                 </a>
               </div>
-              <span class="hero-microcopy">Atendimento direto com a Mônica.</span>
+              <span class="hero-microcopy">Atendimento direto com a Mônica • Encomendas com antecedência</span>
             </div>
 
-            <!-- Camada 1: Metadados Fatuais & Fio de Confeitaria -->
+            <!-- Factual Trust Pillars -->
             <div class="hero-meta">
               <div class="hero-meta-item">
-                <span class="hero-meta-label">Tradição</span>
-                <span class="hero-meta-value">Desde 2015</span>
+                <span class="hero-meta-value">2015</span>
+                <span class="hero-meta-label">Tradição artesanal</span>
               </div>
               <div class="hero-meta-item">
-                <span class="hero-meta-label">Ateliê</span>
-                <span class="hero-meta-value">João Monlevade — MG</span>
+                <span class="hero-meta-value">+1.000</span>
+                <span class="hero-meta-label">Bolos entregues</span>
+              </div>
+              <div class="hero-meta-item">
+                <span class="hero-meta-value">3.6k+</span>
+                <span class="hero-meta-label">No Instagram</span>
               </div>
             </div>
           </div>
+
+          <!-- Right Column: Visual Portrait Showcase with Golden Aura -->
+          <div class="hero-visual-col">
+            <div class="hero-aura-glow"></div>
+            <div class="hero-frame-luxury">
+              <img src="./assets/images/monica-fideles-segurando-bolo-hero-768.webp"
+                srcset="./assets/images/monica-fideles-segurando-bolo-hero-480.webp 480w, ./assets/images/monica-fideles-segurando-bolo-hero-768.webp 768w, ./assets/images/monica-fideles-segurando-bolo-hero-1080.webp 1080w"
+                sizes="(max-width: 480px) 90vw, (max-width: 991px) 380px, 460px"
+                alt="Mônica Fideles segurando bolo artesanal com flores e acabamento fino"
+                class="hero-portrait" width="768" height="1024" fetchpriority="high">
+
+              <!-- Floating Luxury Glass Badge -->
+              <div class="hero-glass-pill">
+                <span class="pill-dot"></span>
+                <span class="pill-text">Feito à Mão com Amor</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
       <!-- ==========================================
            CREDIBILITY STRIP
            ========================================== -->
-      <section class="credibility-section" data-scroll-section>
+      <section class="credibility-section">
         <div class="container">
           <div class="credibility-grid">
             <div class="credibility-item">
               <span class="credibility-num">2015</span>
-              <span class="credibility-label">Tradição em João Monlevade</span>
+              <span class="credibility-label">Desde a primeira receita</span>
             </div>
 
             <div class="credibility-item">
-              <span class="credibility-num">+1000</span>
-              <span class="credibility-label">Bolos produzidos sob encomenda</span>
+              <span class="credibility-num">+1.000</span>
+              <span class="credibility-label">Bolos criados sob medida</span>
             </div>
 
             <div class="credibility-item">
               <span class="credibility-num">3.6k+</span>
-              <span class="credibility-label">Seguidores no Instagram</span>
+              <span class="credibility-label">Clientes & seguidores</span>
             </div>
 
             <div class="credibility-item">
-              <span class="credibility-num">410+</span>
-              <span class="credibility-label">Publicações de trabalhos</span>
+              <span class="credibility-num">100%</span>
+              <span class="credibility-label">Ingredientes selecionados</span>
             </div>
           </div>
         </div>
@@ -247,7 +267,7 @@
       <!-- ==========================================
            HISTÓRIA & SOBRE MÔNICA
            ========================================== -->
-      <section id="historia" class="history-section" data-scroll-section>
+      <section id="historia" class="history-section">
         <div class="container history-grid">
           <div class="history-visual">
             <div class="history-frame">
@@ -292,158 +312,162 @@
       </section>
 
       <!-- ==========================================
-           EDITORIAL GALLERY (3D EXPERIÊNCIA + FALLBACK ESTÁTICO)
+           EDITORIAL GALLERY: LIVE 3D INTERACTIVE CAROUSEL
            ========================================== -->
-      <section id="galeria" class="gallery-section" data-scroll-section>
+      <section id="galeria" class="gallery-section">
         <div class="container">
           <div class="gallery-header">
-            <div class="section-label">Portfólio de Trabalhos</div>
-            <h2 class="heading-section">Bolos e doces criados para celebrar.</h2>
-            <p class="text-body">Trabalhos autorais produzidos sob encomenda para aniversários, festas e momentos especiais em família.</p>
+            <div class="section-label">Portfólio de Trabalhos & Criações</div>
+            <h2 class="heading-section">Galeria 3D Interativa de Bolos & Doces</h2>
+            <p class="text-body">Arraste para girar em 3D, selecione seu modelo favorito e peça diretamente no WhatsApp.</p>
           </div>
 
-          <!-- Palco 3D Interativo (Desktop) -->
-          <div id="gallery-3d-stage" class="gallery-3d-stage"></div>
-          <div class="gallery-3d-ctrl">
-            <button id="gallery-3d-toggle" class="btn-secondary gallery-toggle-btn" type="button" aria-expanded="false">
-              Explorar em 3D Interativo
-            </button>
+          <!-- 3D Interactive WebGL Stage (Active on Desktop & Tablet) -->
+          <div class="gallery-3d-wrapper">
+            <div id="gallery-3d-stage" class="gallery-3d-stage" tabindex="0" aria-label="Galeria 3D de bolos artesanais"></div>
+            
+            <!-- Controls Bar under 3D Scene -->
+            <div class="gallery-3d-controlbar">
+              <button id="gallery-prev-btn" class="ctrl-arrow-btn" type="button" aria-label="Bolo anterior">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+
+              <div class="gallery-active-info">
+                <span id="gallery-active-count" class="gallery-count-pill">01 / 07</span>
+                <h3 id="gallery-active-title" class="gallery-cake-title">Bolo Festivo Decorado</h3>
+              </div>
+
+              <button id="gallery-next-btn" class="ctrl-arrow-btn" type="button" aria-label="Próximo bolo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+              <a id="gallery-order-btn" href="https://wa.me/5531973113229" target="_blank" rel="noopener noreferrer" class="btn-primary gallery-quick-order">
+                <span>Pedir no WhatsApp</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
           </div>
 
-          <!-- Fallback Estático / Mobile Grid Editorial -->
-          <div id="gallery-fallback-grid" class="gallery-grid gallery-static-grid">
-            <figure class="gallery-item gallery-item-1">
-              <img src="./assets/images/bolo-galeria-1-960.webp"
-                srcset="./assets/images/bolo-galeria-1-480.webp 480w, ./assets/images/bolo-galeria-1-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Bolo festivo decorado artesanalmente pela FIDELES CONFEITARIA" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1200">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">01</div>
-                  <div class="gallery-caption">Bolo Festivo Decorado</div>
-                </div>
-              </figcaption>
-            </figure>
+          <!-- Editorial Grid Showcase for Mobile & Accessibility -->
+          <div class="gallery-editorial-grid">
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-1-480.webp" alt="Bolo Festivo Decorado" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">01 • Festivo</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Bolo Festivo Decorado</h4>
+                <p>Acabamento artesanal com brigadeiro nobre e flores decorativas.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20do%20Bolo%20Festivo%20Decorado!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
 
-            <figure class="gallery-item gallery-item-2">
-              <img src="./assets/images/bolo-galeria-2-960.webp"
-                srcset="./assets/images/bolo-galeria-2-480.webp 480w, ./assets/images/bolo-galeria-2-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Doces finos de celebração da FIDELES CONFEITARIA" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1280">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">02</div>
-                  <div class="gallery-caption">Doces de Celebração</div>
-                </div>
-              </figcaption>
-            </figure>
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-2-480.webp" alt="Doces de Celebração" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">02 • Doces Finos</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Doces de Celebração</h4>
+                <p>Variedade de docinhos para mesas de aniversário e casamentos.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20dos%20Doces%20de%20Celebra%C3%A7%C3%A3o!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
 
-            <figure class="gallery-item gallery-item-3">
-              <img src="./assets/images/bolo-galeria-3-960.webp"
-                srcset="./assets/images/bolo-galeria-3-480.webp 480w, ./assets/images/bolo-galeria-3-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Acabamento artesanal e texturas de bolo decorado" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1280">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">03</div>
-                  <div class="gallery-caption">Acabamento Artesanal</div>
-                </div>
-              </figcaption>
-            </figure>
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-3-480.webp" alt="Acabamento Artesanal" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">03 • Artesanal</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Acabamento Artesanal</h4>
+                <p>Texturas acetinadas e harmonia visual para momentos especiais.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20do%20Bolo%20Acabamento%20Artesanal!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
 
-            <figure class="gallery-item gallery-item-4">
-              <img src="./assets/images/bolo-galeria-4-960.webp"
-                srcset="./assets/images/bolo-galeria-4-480.webp 480w, ./assets/images/bolo-galeria-4-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Bolo temático especial confeccionado para aniversário" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1280">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">04</div>
-                  <div class="gallery-caption">Bolo Temático Especial</div>
-                </div>
-              </figcaption>
-            </figure>
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-4-480.webp" alt="Bolo Temático Especial" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">04 • Temático</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Bolo Temático Especial</h4>
+                <p>Personalizado sob medida com os elementos que contam sua história.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20do%20Bolo%20Tem%C3%A1tico!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
 
-            <figure class="gallery-item gallery-item-5">
-              <img src="./assets/images/bolo-galeria-5-960.webp"
-                srcset="./assets/images/bolo-galeria-5-480.webp 480w, ./assets/images/bolo-galeria-5-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Texturas finas e detalhes em bolo de festa" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1280">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">05</div>
-                  <div class="gallery-caption">Texturas & Detalhes</div>
-                </div>
-              </figcaption>
-            </figure>
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-5-480.webp" alt="Texturas & Detalhes" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">05 • Texturas</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Texturas & Detalhes</h4>
+                <p>Massa molhadinha, recheio cremoso e acabamento impecável.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20do%20Bolo%20Texturas%20e%20Detalhes!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
 
-            <figure class="gallery-item gallery-item-6">
-              <img src="./assets/images/bolo-galeria-6-960.webp"
-                srcset="./assets/images/bolo-galeria-6-480.webp 480w, ./assets/images/bolo-galeria-6-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Doces finos artesanais para casamentos e festas" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1280">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">06</div>
-                  <div class="gallery-caption">Doces Finos</div>
-                </div>
-              </figcaption>
-            </figure>
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-6-480.webp" alt="Doces Finos Gourmet" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">06 • Gourmet</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Doces Finos Gourmet</h4>
+                <p>Ingredientes puros selecionados com sabores que encantam.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20dos%20Doces%20Gourmet!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
 
-            <figure class="gallery-item gallery-item-7">
-              <img src="./assets/images/bolo-galeria-7-960.webp"
-                srcset="./assets/images/bolo-galeria-7-480.webp 480w, ./assets/images/bolo-galeria-7-960.webp 960w"
-                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 600px"
-                alt="Criação personalizada em bolo de vários andares" class="gallery-img"
-                loading="lazy" decoding="async" width="960" height="1280">
-              <figcaption class="gallery-overlay">
-                <div>
-                  <div class="gallery-num">07</div>
-                  <div class="gallery-caption">Criação Personalizada</div>
-                </div>
-              </figcaption>
-            </figure>
+            <div class="gallery-card">
+              <div class="gallery-card-img-wrap">
+                <img src="./assets/images/bolo-galeria-7-480.webp" alt="Criação Personalizada" loading="lazy" width="480" height="600">
+                <span class="gallery-card-tag">07 • Exclusivo</span>
+              </div>
+              <div class="gallery-card-info">
+                <h4>Criação Personalizada</h4>
+                <p>Para grandes eventos, aniversários e casamentos inesquecíveis.</p>
+                <a href="https://wa.me/5531973113229?text=Ol%C3%A1%20M%C3%B4nica,%20gostei%20da%20Cria%C3%A7%C3%A3o%20Personalizada!" target="_blank" rel="noopener noreferrer" class="card-link">Pedir este modelo →</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- ==========================================
-           DIVISOR COBERTURA (CHOCOLATE DERRETENDO SVG INLINE)
+           DIVISOR COBERTURA (ORGANIC CHOCOLATE SVG)
            ========================================== -->
-      <div class="divider-cocoa-wrapper" aria-hidden="true" data-scroll-section>
+      <div class="divider-cocoa-wrapper" aria-hidden="true">
         <svg class="divider-cocoa" viewBox="0 0 1440 140" preserveAspectRatio="none">
           <defs>
             <linearGradient id="cocoaGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#4A2A1B" />
-              <stop offset="55%" stop-color="#7A4A2E" />
+              <stop offset="50%" stop-color="#7A4A2E" />
               <stop offset="100%" stop-color="#3F1222" />
             </linearGradient>
             <radialGradient id="cocoaSheen" cx="72%" cy="30%" r="48%">
-              <stop offset="0%" stop-color="#C99728" stop-opacity="0.22" />
+              <stop offset="0%" stop-color="#C99728" stop-opacity="0.25" />
               <stop offset="100%" stop-color="#C99728" stop-opacity="0" />
             </radialGradient>
           </defs>
           <path class="cocoa-path" d="M0,0 L1440,0 L1440,40 C1330,78 1250,132 1160,110 C1070,88 1000,42 910,76 C820,110 760,138 670,104 C580,70 510,36 420,80 C330,124 250,134 160,94 C90,62 40,36 0,54 Z" fill="url(#cocoaGradient)" />
           <path class="cocoa-sheen" d="M0,0 L1440,0 L1440,40 C1330,78 1250,132 1160,110 C1070,88 1000,42 910,76 C820,110 760,138 670,104 C580,70 510,36 420,80 C330,124 250,134 160,94 C90,62 40,36 0,54 Z" fill="url(#cocoaSheen)" />
-          <path class="cocoa-edge" d="M0,1 Q360,2 720,1 T1440,1" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
+          <path class="cocoa-edge" d="M0,1 Q360,2 720,1 T1440,1" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" />
         </svg>
       </div>
 
       <!-- ==========================================
            AUTHENTIC TESTIMONIALS
            ========================================== -->
-      <section id="depoimentos" class="testimonials-section" data-scroll-section>
+      <section id="depoimentos" class="testimonials-section">
         <div class="container">
           <div class="testimonials-header">
             <div class="section-label">Depoimentos no WhatsApp</div>
-            <h2 class="heading-section" style="margin-top: 12px;">Avaliações reais de clientes.</h2>
-            <p class="text-body">Mensagens enviadas por clientes após receberem seus bolos e doces em João Monlevade.</p>
+            <h2 class="heading-section" style="margin-top: 10px;">Avaliações reais de quem já provou.</h2>
+            <p class="text-body">Mensagens enviadas com carinho após receberem suas encomendas em João Monlevade.</p>
           </div>
         </div>
 
@@ -508,7 +532,7 @@
               </div>
             </div>
 
-            <!-- Loop Items Set 2 (Identical for seamless 100% marquee loop) -->
+            <!-- Loop Items Set 2 (Seamless Mirror Loop) -->
             <div class="testimonial-card-marquee" aria-hidden="true">
               <p class="testimonial-quote">
                 "Mônica, muito obrigada pelo bolo! Ficou simplesmente maravilhoso, o sabor de maracujá com brigadeiro
@@ -571,7 +595,7 @@
       <!-- ==========================================
            FOR YOUR MOMENT
            ========================================== -->
-      <section class="moment-section" data-scroll-section>
+      <section class="moment-section">
         <div class="container">
           <div class="moment-card">
             <div class="moment-content">
@@ -597,11 +621,11 @@
       <!-- ==========================================
            HOW TO ORDER PROCESS
            ========================================== -->
-      <section class="process-section" data-scroll-section>
+      <section class="process-section">
         <div class="container">
           <div style="text-align: left; max-width: 600px; margin: 0 0 40px 0;">
             <div class="section-label">Etapas do Pedido</div>
-            <h2 class="heading-section" style="margin-top: 12px;">Como fazer sua encomenda.</h2>
+            <h2 class="heading-section" style="margin-top: 10px;">Como fazer sua encomenda.</h2>
           </div>
 
           <div class="process-grid">
@@ -629,7 +653,7 @@
       <!-- ==========================================
            INSTAGRAM & LOCATION SECTION
            ========================================== -->
-      <section class="info-section" data-scroll-section>
+      <section class="info-section">
         <div class="container info-grid">
 
           <!-- Instagram Highlight Box -->
@@ -677,16 +701,16 @@
       <!-- ==========================================
            FINAL CTA SECTION
            ========================================== -->
-      <section class="final-cta-section" data-scroll-section>
+      <section class="final-cta-section">
         <div class="container" style="text-align: center;">
           <h2 class="final-cta-title">Pronto para encomendar seu bolo?</h2>
           <p class="final-cta-desc">
             Fale direto com a Mônica pelo WhatsApp e garanta a sua data com antecedência.
           </p>
           <a href="https://wa.me/5531973113229" target="_blank" rel="noopener noreferrer" class="btn-primary"
-            style="background: #FFFFFF; color: #8a0433; box-shadow: 0 15px 35px rgba(0,0,0,0.18);"
+            style="background: #FFFFFF; color: #8A0433; box-shadow: 0 15px 35px rgba(0,0,0,0.18);"
             aria-label="Falar com a Mônica pelo WhatsApp">
-            <svg class="svg-whatsapp" viewBox="0 0 24 24" fill="#8a0433" aria-hidden="true">
+            <svg class="svg-whatsapp" viewBox="0 0 24 24" fill="#8A0433" aria-hidden="true">
               <path
                 d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z" />
               <path
@@ -702,7 +726,7 @@
     <!-- ==========================================
          FOOTER
          ========================================== -->
-    <footer class="footer" role="contentinfo" data-scroll-section>
+    <footer class="footer" role="contentinfo">
       <div class="container footer-container">
         <div>
           <strong
@@ -719,10 +743,9 @@
       </div>
     </footer>
 
-    <!-- Sole Floating WhatsApp Button (Icon-Only Green Circular Button) -->
+    <!-- Sole Floating WhatsApp Button (Fixed Bottom-Right) -->
     <a href="https://wa.me/5531973113229" target="_blank" rel="noopener noreferrer" class="whatsapp-float-btn"
       aria-label="Pedir pelo WhatsApp">
-      <span class="whatsapp-float-glow" aria-hidden="true"></span>
       <svg class="svg-whatsapp-float" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true">
         <path
           d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z" />
@@ -734,7 +757,7 @@
 
   </div>
 
-  <!-- Runtime Scripts (Three.js Hero, 3D Gallery & Main Motion Engine) -->
+  <!-- Runtime Scripts (Ambient Particles & Interactive 3D Gallery Engine) -->
   <script src="./js/three-hero.js" defer></script>
   <script src="./js/gallery3d.js" defer></script>
   <script src="./js/main.js" defer></script>

@@ -1,369 +1,316 @@
 /* ==========================================================================
-   FIDELES CONFEITARIA: 3D EDITORIAL GALLERY ENGINE
-   Port of Golden Angle Depth Algorithm to Vanilla Three.js r128
+   FIDELES CONFEITARIA: 3D CYLINDRICAL INTERACTIVE CAKE GALLERY
+   Three.js r128 — Smooth drag, wheel navigation, card hover & direct order
    ========================================================================== */
 
 'use strict';
 
 (function init3DGallery() {
-  const container = document.getElementById('gallery-3d-stage');
-  const fallbackGrid = document.getElementById('gallery-fallback-grid');
-  const engageBtn = document.getElementById('gallery-3d-toggle');
-  
-  if (!container || typeof THREE === 'undefined') return;
+  const stage = document.getElementById('gallery-3d-stage');
+  const titleDisplay = document.getElementById('gallery-active-title');
+  const countDisplay = document.getElementById('gallery-active-count');
+  const orderBtn = document.getElementById('gallery-order-btn');
+  const prevBtn = document.getElementById('gallery-prev-btn');
+  const nextBtn = document.getElementById('gallery-next-btn');
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion || window.innerWidth < 768) {
-    if (container) container.style.display = 'none';
-    if (fallbackGrid) fallbackGrid.style.display = 'grid';
-    return;
-  }
+  if (!stage || typeof THREE === 'undefined') return;
 
-  const imageList = [
-    './assets/images/bolo-galeria-1-480.webp',
-    './assets/images/bolo-galeria-2-480.webp',
-    './assets/images/bolo-galeria-3-480.webp',
-    './assets/images/bolo-galeria-4-480.webp',
-    './assets/images/bolo-galeria-5-480.webp',
-    './assets/images/bolo-galeria-6-480.webp',
-    './assets/images/bolo-galeria-7-480.webp'
+  const items = [
+    { title: 'Bolo Festivo Decorado', src: './assets/images/bolo-galeria-1-960.webp', desc: 'Acabamento acetinado com flores e detalhes artesanais.' },
+    { title: 'Doces de Celebração', src: './assets/images/bolo-galeria-2-960.webp', desc: 'Doces finos com chocolate nobre e texturas delicadas.' },
+    { title: 'Acabamento Artesanal', src: './assets/images/bolo-galeria-3-960.webp', desc: 'Decoração contemporânea com brilho e técnica apurada.' },
+    { title: 'Bolo Temático Especial', src: './assets/images/bolo-galeria-4-960.webp', desc: 'Design exclusivo personalizado para o tema da sua festa.' },
+    { title: 'Texturas & Detalhes', src: './assets/images/bolo-galeria-5-960.webp', desc: 'Harmonia entre massa leve, recheio cremoso e visual elegante.' },
+    { title: 'Doces Finos Gourmet', src: './assets/images/bolo-galeria-6-960.webp', desc: 'Mesa de doces inesquecível para casamentos e aniversários.' },
+    { title: 'Criação Personalizada', src: './assets/images/bolo-galeria-7-960.webp', desc: 'Bolo em camadas estruturado com sofisticação e sabor.' }
   ];
 
-  const captions = [
-    'Bolo Festivo Decorado',
-    'Doces de Celebração',
-    'Acabamento Artesanal',
-    'Bolo Temático Especial',
-    'Texturas & Detalhes',
-    'Doces Finos',
-    'Criação Personalizada'
-  ];
+  const total = items.length;
+  let activeIndex = 0;
 
+  // Scene setup
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
-  camera.position.set(0, 0, 7);
+  const camera = new THREE.PerspectiveCamera(45, stage.clientWidth / stage.clientHeight, 0.1, 100);
+  camera.position.set(0, 0.2, 6.2);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
-    antialias: window.devicePixelRatio <= 1,
+    antialias: window.devicePixelRatio <= 1.5,
     powerPreference: 'high-performance'
   });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
-  container.appendChild(renderer.domElement);
+  renderer.setSize(stage.clientWidth, stage.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  stage.appendChild(renderer.domElement);
 
+  // Lighting for rich 3D cards
+  const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.95);
+  scene.add(ambientLight);
+
+  const dirLight = new THREE.DirectionalLight(0xFDF8EE, 0.8);
+  dirLight.position.set(4, 5, 6);
+  scene.add(dirLight);
+
+  const goldSpot = new THREE.PointLight(0xC99728, 1.2, 10);
+  goldSpot.position.set(0, 2, 4);
+  scene.add(goldSpot);
+
+  // Group containing all cards
+  const carouselGroup = new THREE.Group();
+  scene.add(carouselGroup);
+
+  const radius = 3.6;
+  const angleStep = (Math.PI * 2) / total;
+  const cards = [];
+  const cardGeometry = new THREE.PlaneGeometry(1.85, 2.45, 16, 16);
   const textureLoader = new THREE.TextureLoader();
-  const textures = imageList.map(src => {
-    const tex = textureLoader.load(src);
-    tex.generateMipmaps = true;
-    tex.minFilter = THREE.LinearMipmapLinearFilter;
-    return tex;
-  });
 
-  // Shaders for Golden Angle Gallery Planes
-  const vertexShader = `
-    uniform float time;
-    uniform float scrollForce;
-    uniform float isHovered;
-    varying vec2 vUv;
-    varying vec3 vNormal;
-
-    void main() {
-      vUv = uv;
-      vNormal = normal;
-      vec3 pos = position;
-
-      // Subtle cylindrical arching
-      pos.z += (sin(uv.x * 3.14159) * 0.14) * (1.0 + isHovered * 0.2);
-
-      // Ripple wave on hover
-      float hoverWave = sin(uv.y * 8.0 - time * 3.5) * isHovered * 0.04;
-      pos.z += hoverWave;
-
-      // Flag wave induced by scroll momentum
-      float flagWave = sin(uv.x * 5.0 + time * 2.5) * 0.035 * clamp(scrollForce, -2.0, 2.0);
-      pos.y += flagWave;
-
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  items.forEach((item, i) => {
+    // Curved card geometry for luxury tactile feel
+    const geom = cardGeometry.clone();
+    const pos = geom.attributes.position;
+    for (let p = 0; p < pos.count; p++) {
+      const x = pos.getX(p);
+      pos.setZ(p, Math.sin((x / 1.85) * Math.PI) * 0.12);
     }
-  `;
+    geom.computeVertexNormals();
 
-  const fragmentShader = `
-    uniform sampler2D map;
-    uniform float opacity;
-    uniform float blurAmount;
-    uniform float isHovered;
-    varying vec2 vUv;
-    varying vec3 vNormal;
+    const texture = textureLoader.load(item.src);
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
 
-    void main() {
-      // 3x3 blur kernel approximation for smooth mobile/desktop performance
-      vec2 texel = vec2(1.0 / 480.0, 1.0 / 640.0) * blurAmount * 1.8;
-      vec4 col = texture2D(map, vUv) * 0.36;
-      col += texture2D(map, vUv + vec2(texel.x, 0.0)) * 0.16;
-      col += texture2D(map, vUv - vec2(texel.x, 0.0)) * 0.16;
-      col += texture2D(map, vUv + vec2(0.0, texel.y)) * 0.16;
-      col += texture2D(map, vUv - vec2(0.0, texel.y)) * 0.16;
-
-      // Curve Highlight Specular Edge
-      float edgeGlow = pow(1.0 - abs(vUv.x - 0.5) * 2.0, 3.0) * (0.08 + isHovered * 0.14);
-      col.rgb += vec3(edgeGlow);
-
-      // Warm tone balance matching confectionery palette
-      col.rgb = mix(col.rgb, col.rgb * vec3(1.04, 0.98, 0.94), 0.3);
-
-      gl_FragColor = vec4(col.rgb, opacity);
-    }
-  `;
-
-  const planeCount = 8;
-  const depthRange = 36.0;
-  const geometry = new THREE.PlaneGeometry(2.0, 2.6, 24, 24);
-  const planes = [];
-  const galleryGroup = new THREE.Group();
-  scene.add(galleryGroup);
-
-  for (let i = 0; i < planeCount; i++) {
-    const mat = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      transparent: true,
-      depthWrite: false,
-      uniforms: {
-        map: { value: textures[i % textures.length] },
-        opacity: { value: 1.0 },
-        blurAmount: { value: 0.0 },
-        scrollForce: { value: 0.0 },
-        time: { value: 0.0 },
-        isHovered: { value: 0.0 }
-      }
+    const material = new THREE.MeshStandardMaterial({
+      map: texture,
+      roughness: 0.35,
+      metalness: 0.1,
+      side: THREE.DoubleSide
     });
 
-    const mesh = new THREE.Mesh(geometry, mat);
+    const mesh = new THREE.Mesh(geom, material);
+    const angle = i * angleStep;
 
-    // Golden Angle spiral distribution (i * 2.618 and i * 1.618 + PI/3)
-    const angleX = i * 2.618;
-    const angleY = i * 1.618 + Math.PI / 3.0;
-    const radiusX = 2.4 + Math.sin(i) * 0.4;
-    const radiusY = 1.3 + Math.cos(i) * 0.3;
+    mesh.position.x = Math.sin(angle) * radius;
+    mesh.position.z = Math.cos(angle) * radius - radius;
+    mesh.rotation.y = angle;
 
     mesh.userData = {
       index: i,
-      imgIndex: i % textures.length,
-      angleX: angleX,
-      angleY: angleY,
-      radiusX: radiusX,
-      radiusY: radiusY,
-      progress: i / planeCount, // 0 to 1
-      isHovered: false
+      title: item.title,
+      desc: item.desc,
+      baseScale: 1.0,
+      targetScale: 1.0,
+      targetY: 0
     };
 
-    galleryGroup.add(mesh);
-    planes.push(mesh);
-  }
+    carouselGroup.add(mesh);
+    cards.push(mesh);
+  });
 
-  // Active interaction states
-  let isEngaged = false;
-  let scrollVelocity = 0.015;
-  let targetVelocity = 0.015;
-  let lastUserInteraction = Date.now();
-  let hoveredMesh = null;
-  let isVisible = true;
-  let animId = null;
+  // Position carousel center so active item sits near camera
+  carouselGroup.position.z = 0;
 
-  // Toggle button logic
-  if (engageBtn) {
-    engageBtn.addEventListener('click', () => {
-      isEngaged = !isEngaged;
-      container.classList.toggle('is-engaged', isEngaged);
-      engageBtn.setAttribute('aria-expanded', isEngaged);
-      engageBtn.textContent = isEngaged ? 'Desarmar Galeria 3D (Esc)' : 'Explorar em 3D Interativo';
-    });
-  }
+  // Rotation State & Physics
+  let targetAngle = 0;
+  let currentAngle = 0;
+  let isDragging = false;
+  let startX = 0;
+  let dragVelocity = 0;
+  let lastX = 0;
+  let autoRotateSpeed = 0.0015;
+  let isUserInteracting = false;
+  let interactionTimer = null;
 
-  // Wheel interaction: ONLY captures wheel when cursor is inside container AND gallery is engaged
-  container.addEventListener('wheel', (e) => {
-    if (!isEngaged) return; // Leave page scroll natural!
-    e.preventDefault();
-    targetVelocity += e.deltaY * 0.0006;
-    lastUserInteraction = Date.now();
-  }, { passive: false });
-
-  // Keyboard navigation
-  container.setAttribute('tabindex', '0');
-  container.setAttribute('aria-label', 'Galeria 3D de bolos artesanais. Use setas para navegar.');
-  container.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isEngaged) {
-      isEngaged = false;
-      container.classList.remove('is-engaged');
-      if (engageBtn) {
-        engageBtn.setAttribute('aria-expanded', 'false');
-        engageBtn.textContent = 'Explorar em 3D Interativo';
-      }
-      return;
+  function updateActiveUI(idx) {
+    activeIndex = (idx + total) % total;
+    const item = items[activeIndex];
+    if (titleDisplay) titleDisplay.textContent = item.title;
+    if (countDisplay) countDisplay.textContent = `0${activeIndex + 1} / 0${total}`;
+    if (orderBtn) {
+      const msg = encodeURIComponent(`Olá Mônica! Vi o ${item.title} no site e gostaria de saber mais sobre encomendas.`);
+      orderBtn.href = `https://wa.me/5531973113229?text=${msg}`;
     }
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      targetVelocity += 0.04;
-      lastUserInteraction = Date.now();
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      targetVelocity -= 0.04;
-      lastUserInteraction = Date.now();
+  }
+  updateActiveUI(0);
+
+  function snapToNearest() {
+    const rawIndex = Math.round(-targetAngle / angleStep);
+    targetAngle = -rawIndex * angleStep;
+    const normalizedIndex = ((rawIndex % total) + total) % total;
+    updateActiveUI(normalizedIndex);
+  }
+
+  function rotateToIndex(idx) {
+    const currentNearest = Math.round(-targetAngle / angleStep);
+    let diff = idx - (((currentNearest % total) + total) % total);
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+    targetAngle = -(currentNearest + diff) * angleStep;
+    updateActiveUI(idx);
+    markInteraction();
+  }
+
+  function markInteraction() {
+    isUserInteracting = true;
+    if (interactionTimer) clearTimeout(interactionTimer);
+    interactionTimer = setTimeout(() => {
+      isUserInteracting = false;
+    }, 4000);
+  }
+
+  // Pointer drag events
+  stage.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    lastX = e.clientX;
+    dragVelocity = 0;
+    markInteraction();
+    stage.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - lastX;
+    lastX = e.clientX;
+    dragVelocity = deltaX * 0.004;
+    targetAngle += dragVelocity;
+  });
+
+  window.addEventListener('pointerup', () => {
+    if (isDragging) {
+      isDragging = false;
+      stage.style.cursor = 'grab';
+      targetAngle += dragVelocity * 6;
+      snapToNearest();
     }
   });
 
-  // Raycaster for Hover detection
+  // Wheel event on gallery stage
+  stage.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      targetAngle -= e.deltaX * 0.003;
+      markInteraction();
+      snapToNearest();
+    } else if (e.shiftKey) {
+      e.preventDefault();
+      targetAngle -= e.deltaY * 0.003;
+      markInteraction();
+      snapToNearest();
+    }
+  }, { passive: false });
+
+  // Buttons
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      targetAngle += angleStep;
+      snapToNearest();
+      markInteraction();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      targetAngle -= angleStep;
+      snapToNearest();
+      markInteraction();
+    });
+  }
+
+  // Raycaster for Hover & Click
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2(-999, -999);
+  let hoveredCard = null;
 
-  container.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
+  stage.addEventListener('mousemove', (e) => {
+    const rect = stage.getBoundingClientRect();
     mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
   });
 
-  container.addEventListener('mouseleave', () => {
+  stage.addEventListener('mouseleave', () => {
     mouse.set(-999, -999);
-    if (hoveredMesh) {
-      hoveredMesh.material.uniforms.isHovered.value = 0.0;
-      hoveredMesh = null;
+    if (hoveredCard) {
+      hoveredCard.userData.targetScale = 1.0;
+      hoveredCard.userData.targetY = 0;
+      hoveredCard = null;
     }
   });
 
-  // Section Observer for Performance
-  const section = document.getElementById('galeria');
-  let disposeTimeout = null;
+  stage.addEventListener('click', (e) => {
+    if (Math.abs(e.clientX - startX) > 10) return; // Ignore drag clicks
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(cards);
+    if (hits.length > 0) {
+      const clicked = hits[0].object;
+      rotateToIndex(clicked.userData.index);
+    }
+  });
 
+  // Render Loop
+  let isVisible = true;
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       isVisible = entry.isIntersecting;
-      if (isVisible) {
-        if (disposeTimeout) {
-          clearTimeout(disposeTimeout);
-          disposeTimeout = null;
-        }
-        startLoop();
-      } else {
-        stopLoop();
-        // Lifecycle dispose safeguard if offscreen for > 6s
-        disposeTimeout = setTimeout(() => {
-          if (!isVisible) {
-            // Suspended state
-          }
-        }, 6000);
-      }
     });
-  }, { threshold: 0.08 });
-
-  if (section) observer.observe(section);
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      stopLoop();
-    } else if (isVisible) {
-      startLoop();
-    }
-  });
-
-  const clock = new THREE.Clock();
+  }, { threshold: 0.1 });
+  observer.observe(stage);
 
   function animate() {
-    const delta = clock.getDelta();
-    const elapsed = clock.getElapsedTime();
+    requestAnimationFrame(animate);
+    if (!isVisible) return;
 
-    // Autoplay fallback: return to gentle forward velocity after 3s
-    if (Date.now() - lastUserInteraction > 3000) {
-      targetVelocity = THREE.MathUtils.lerp(targetVelocity, 0.016, 0.04);
+    if (!isDragging && !isUserInteracting) {
+      targetAngle -= autoRotateSpeed;
     }
 
-    scrollVelocity = THREE.MathUtils.lerp(scrollVelocity, targetVelocity, 0.08);
+    // Smooth lerp rotation
+    currentAngle += (targetAngle - currentAngle) * 0.08;
+    carouselGroup.rotation.y = currentAngle;
 
-    // Raycast hover
-    if (container.classList.contains('is-engaged') || mouse.x > -1) {
+    // Raycast check
+    if (!isDragging && mouse.x > -1) {
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(planes);
-      if (intersects.length > 0) {
-        const topMesh = intersects[0].object;
-        if (hoveredMesh !== topMesh) {
-          if (hoveredMesh) hoveredMesh.material.uniforms.isHovered.value = 0.0;
-          hoveredMesh = topMesh;
+      const hits = raycaster.intersectObjects(cards);
+      if (hits.length > 0) {
+        const topHit = hits[0].object;
+        if (hoveredCard !== topHit) {
+          if (hoveredCard) {
+            hoveredCard.userData.targetScale = 1.0;
+            hoveredCard.userData.targetY = 0;
+          }
+          hoveredCard = topHit;
         }
-        hoveredMesh.material.uniforms.isHovered.value = 1.0;
-      } else if (hoveredMesh) {
-        hoveredMesh.material.uniforms.isHovered.value = 0.0;
-        hoveredMesh = null;
+        hoveredCard.userData.targetScale = 1.12;
+        hoveredCard.userData.targetY = 0.18;
+      } else if (hoveredCard) {
+        hoveredCard.userData.targetScale = 1.0;
+        hoveredCard.userData.targetY = 0;
+        hoveredCard = null;
       }
     }
 
-    // Depth loop update
-    planes.forEach((mesh) => {
+    // Update cards scale & depth lighting
+    cards.forEach((mesh) => {
       const u = mesh.userData;
-      u.progress += scrollVelocity * 0.18;
+      mesh.scale.lerp(new THREE.Vector3(u.targetScale, u.targetScale, 1), 0.1);
+      mesh.position.y = THREE.MathUtils.lerp(mesh.position.y, u.targetY, 0.1);
 
-      // Wrap around depth range
-      if (u.progress > 1.0) {
-        u.progress -= 1.0;
-        u.imgIndex = (u.imgIndex + planes.length) % textures.length;
-        mesh.material.uniforms.map.value = textures[u.imgIndex];
-      } else if (u.progress < 0.0) {
-        u.progress += 1.0;
-        u.imgIndex = (u.imgIndex - planes.length + textures.length * 10) % textures.length;
-        mesh.material.uniforms.map.value = textures[u.imgIndex];
-      }
-
-      // Calculate 3D position
-      const p = u.progress;
-      const currentZ = (1.0 - p) * depthRange - 12.0; // from -12 to +24
-      const currentX = Math.sin(u.angleX + p * 3.0) * u.radiusX;
-      const currentY = Math.cos(u.angleY + p * 2.0) * u.radiusY;
-
-      mesh.position.set(currentX, currentY, currentZ);
-      mesh.rotation.z = Math.sin(u.angleX + elapsed * 0.3) * 0.08;
-      mesh.rotation.y = -currentX * 0.06;
-
-      // Opacity Curve: fade in 0.05-0.25, fade out 0.40-0.43 in near view
-      let op = 1.0;
-      if (p < 0.15) {
-        op = THREE.MathUtils.smoothstep(p, 0.02, 0.15);
-      } else if (p > 0.38) {
-        op = 1.0 - THREE.MathUtils.smoothstep(p, 0.38, 0.44);
-      }
-      mesh.material.uniforms.opacity.value = op;
-
-      // Depth blur
-      const distFromFocus = Math.abs(currentZ - 0.0);
-      mesh.material.uniforms.blurAmount.value = THREE.MathUtils.clamp(distFromFocus * 0.12, 0.0, 1.8);
-      mesh.material.uniforms.scrollForce.value = scrollVelocity * 25.0;
-      mesh.material.uniforms.time.value = elapsed;
+      // Cards further back are softly dimmed for realistic depth
+      const worldPos = new THREE.Vector3();
+      mesh.getWorldPosition(worldPos);
+      const distFromFront = (worldPos.z - 0.2); // front card is at highest z
+      const brightness = THREE.MathUtils.clamp(1.0 + distFromFront * 0.15, 0.45, 1.0);
+      mesh.material.color.setRGB(brightness, brightness * 0.98, brightness * 0.96);
     });
 
     renderer.render(scene, camera);
   }
 
-  function startLoop() {
-    if (animId) return;
-    renderer.setAnimationLoop(animate);
-    animId = true;
-  }
-
-  function stopLoop() {
-    renderer.setAnimationLoop(null);
-    animId = null;
-  }
-
-  startLoop();
+  animate();
 
   // Resize handler
   window.addEventListener('resize', () => {
-    if (window.innerWidth < 768) {
-      container.style.display = 'none';
-      if (fallbackGrid) fallbackGrid.style.display = 'grid';
-      stopLoop();
-    } else {
-      container.style.display = 'block';
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      if (isVisible) startLoop();
-    }
-  }, { passive: true });
+    camera.aspect = stage.clientWidth / stage.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(stage.clientWidth, stage.clientHeight);
+  });
 })();
