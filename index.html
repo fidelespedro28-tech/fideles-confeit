@@ -318,31 +318,45 @@
         <div class="container">
           <div class="gallery-header">
             <div class="section-label">Portfólio de Trabalhos & Criações</div>
-            <h2 class="heading-section">Galeria 3D Interativa de Bolos & Doces</h2>
-            <p class="text-body">Arraste para girar em 3D, selecione seu modelo favorito e peça diretamente no WhatsApp.</p>
+            <h2 class="heading-section">Galeria de Bolos & Doces Finos</h2>
+            <p class="text-body">Explore as criações em 3D interativo ou veja todos os modelos na grade editorial completa.</p>
+
+            <!-- Interactive Mode Switcher -->
+            <div class="gallery-view-switcher" role="tablist" aria-label="Modo de visualização da galeria">
+              <button id="view-mode-3d" class="view-switch-btn active" role="tab" aria-selected="true" aria-controls="gallery-3d-wrapper">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                <span>Experiência 3D</span>
+              </button>
+              <button id="view-mode-grid" class="view-switch-btn" role="tab" aria-selected="false" aria-controls="gallery-editorial-grid">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Ver Todos em Grade</span>
+              </button>
+            </div>
           </div>
 
-          <!-- 3D Interactive WebGL Stage (Active on Desktop & Tablet) -->
+          <!-- 3D Interactive WebGL Stage (Active on Desktop & Mobile) -->
           <div class="gallery-3d-wrapper">
             <div id="gallery-3d-stage" class="gallery-3d-stage" tabindex="0" aria-label="Galeria 3D de bolos artesanais"></div>
             
             <!-- Controls Bar under 3D Scene -->
             <div class="gallery-3d-controlbar">
-              <button id="gallery-prev-btn" class="ctrl-arrow-btn" type="button" aria-label="Bolo anterior">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-              </button>
+              <div class="gallery-ctrl-nav">
+                <button id="gallery-prev-btn" class="ctrl-arrow-btn" type="button" aria-label="Bolo anterior">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
 
-              <div class="gallery-active-info">
-                <span id="gallery-active-count" class="gallery-count-pill">01 / 07</span>
-                <h3 id="gallery-active-title" class="gallery-cake-title">Bolo Festivo Decorado</h3>
+                <div class="gallery-active-info">
+                  <span id="gallery-active-count" class="gallery-count-pill">01 / 07</span>
+                  <h3 id="gallery-active-title" class="gallery-cake-title">Bolo Festivo Decorado</h3>
+                </div>
+
+                <button id="gallery-next-btn" class="ctrl-arrow-btn" type="button" aria-label="Próximo bolo">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
               </div>
 
-              <button id="gallery-next-btn" class="ctrl-arrow-btn" type="button" aria-label="Próximo bolo">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-              </button>
-
               <a id="gallery-order-btn" href="https://wa.me/5531973113229" target="_blank" rel="noopener noreferrer" class="btn-primary gallery-quick-order">
-                <span>Pedir no WhatsApp</span>
+                <span>Pedir este modelo no WhatsApp</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </a>
             </div>

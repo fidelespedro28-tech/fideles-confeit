@@ -1,6 +1,6 @@
 /* ==========================================================================
    FIDELES CONFEITARIA: 3D CYLINDRICAL INTERACTIVE CAKE GALLERY
-   Three.js r128 — Smooth drag, wheel navigation, card hover & direct order
+   Three.js r128 — Smooth drag, touch scroll safety, card hover & direct order
    ========================================================================== */
 
 'use strict';
@@ -31,7 +31,20 @@
   // Scene setup
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, stage.clientWidth / stage.clientHeight, 0.1, 100);
-  camera.position.set(0, 0.2, 6.2);
+
+  function updateCameraDistance() {
+    const w = stage.clientWidth;
+    if (w < 480) {
+      camera.position.set(0, 0.1, 7.6);
+    } else if (w < 768) {
+      camera.position.set(0, 0.15, 6.8);
+    } else {
+      camera.position.set(0, 0.2, 6.0);
+    }
+    camera.aspect = stage.clientWidth / stage.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+  updateCameraDistance();
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -42,15 +55,15 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   stage.appendChild(renderer.domElement);
 
-  // Lighting for rich 3D cards
+  // Lighting
   const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.95);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xFDF8EE, 0.8);
+  const dirLight = new THREE.DirectionalLight(0xFDF8EE, 0.85);
   dirLight.position.set(4, 5, 6);
   scene.add(dirLight);
 
-  const goldSpot = new THREE.PointLight(0xC99728, 1.2, 10);
+  const goldSpot = new THREE.PointLight(0xC99728, 1.2, 12);
   goldSpot.position.set(0, 2, 4);
   scene.add(goldSpot);
 
@@ -65,7 +78,6 @@
   const textureLoader = new THREE.TextureLoader();
 
   items.forEach((item, i) => {
-    // Curved card geometry for luxury tactile feel
     const geom = cardGeometry.clone();
     const pos = geom.attributes.position;
     for (let p = 0; p < pos.count; p++) {
@@ -81,7 +93,7 @@
     const material = new THREE.MeshStandardMaterial({
       map: texture,
       roughness: 0.35,
-      metalness: 0.1,
+      metalness: 0.08,
       side: THREE.DoubleSide
     });
 
@@ -105,17 +117,13 @@
     cards.push(mesh);
   });
 
-  // Position carousel center so active item sits near camera
-  carouselGroup.position.z = 0;
-
   // Rotation State & Physics
   let targetAngle = 0;
   let currentAngle = 0;
   let isDragging = false;
-  let startX = 0;
   let dragVelocity = 0;
   let lastX = 0;
-  let autoRotateSpeed = 0.0015;
+  let autoRotateSpeed = 0.0012;
   let isUserInteracting = false;
   let interactionTimer = null;
 
@@ -125,7 +133,7 @@
     if (titleDisplay) titleDisplay.textContent = item.title;
     if (countDisplay) countDisplay.textContent = `0${activeIndex + 1} / 0${total}`;
     if (orderBtn) {
-      const msg = encodeURIComponent(`Olá Mônica! Vi o ${item.title} no site e gostaria de saber mais sobre encomendas.`);
+      const msg = encodeURIComponent(`Olá Mônica! Vi o ${item.title} no site e gostaria de encomendar.`);
       orderBtn.href = `https://wa.me/5531973113229?text=${msg}`;
     }
   }
@@ -153,29 +161,34 @@
     if (interactionTimer) clearTimeout(interactionTimer);
     interactionTimer = setTimeout(() => {
       isUserInteracting = false;
-    }, 4000);
+    }, 4500);
   }
 
-  // Pointer drag events
-  stage.addEventListener('pointerdown', (e) => {
+  // --- MOUSE DRAG (DESKTOP) ---
+  let isMouseDown = false;
+  let mouseStartX = 0;
+
+  stage.addEventListener('mousedown', (e) => {
+    isMouseDown = true;
     isDragging = true;
-    startX = e.clientX;
+    mouseStartX = e.clientX;
     lastX = e.clientX;
     dragVelocity = 0;
     markInteraction();
     stage.style.cursor = 'grabbing';
   });
 
-  window.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
+  window.addEventListener('mousemove', (e) => {
+    if (!isMouseDown) return;
     const deltaX = e.clientX - lastX;
     lastX = e.clientX;
     dragVelocity = deltaX * 0.004;
     targetAngle += dragVelocity;
   });
 
-  window.addEventListener('pointerup', () => {
-    if (isDragging) {
+  window.addEventListener('mouseup', () => {
+    if (isMouseDown) {
+      isMouseDown = false;
       isDragging = false;
       stage.style.cursor = 'grab';
       targetAngle += dragVelocity * 6;
@@ -183,16 +196,64 @@
     }
   });
 
-  // Wheel event on gallery stage
+  // --- TOUCH EVENTS (SMART SCROLL SAFETY FOR MOBILE) ---
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchIsSwiping = false;
+  let touchIsScrolling = false;
+
+  stage.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    lastX = touchStartX;
+    touchIsSwiping = false;
+    touchIsScrolling = false;
+    dragVelocity = 0;
+  }, { passive: true });
+
+  stage.addEventListener('touchmove', (e) => {
+    if (e.touches.length !== 1) return;
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = currentX - touchStartX;
+    const diffY = currentY - touchStartY;
+
+    if (!touchIsSwiping && !touchIsScrolling) {
+      if (Math.abs(diffY) > 7 && Math.abs(diffY) > Math.abs(diffX)) {
+        touchIsScrolling = true;
+        return; // Allow native page scroll
+      } else if (Math.abs(diffX) > 7 && Math.abs(diffX) > Math.abs(diffY)) {
+        touchIsSwiping = true;
+        isDragging = true;
+        markInteraction();
+      }
+    }
+
+    if (touchIsSwiping) {
+      if (e.cancelable) e.preventDefault();
+      const deltaX = currentX - lastX;
+      lastX = currentX;
+      dragVelocity = deltaX * 0.005;
+      targetAngle += dragVelocity;
+    }
+  }, { passive: false });
+
+  stage.addEventListener('touchend', () => {
+    if (touchIsSwiping) {
+      isDragging = false;
+      targetAngle += dragVelocity * 6;
+      snapToNearest();
+    }
+    touchIsSwiping = false;
+    touchIsScrolling = false;
+  }, { passive: true });
+
+  // Wheel navigation
   stage.addEventListener('wheel', (e) => {
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
       e.preventDefault();
       targetAngle -= e.deltaX * 0.003;
-      markInteraction();
-      snapToNearest();
-    } else if (e.shiftKey) {
-      e.preventDefault();
-      targetAngle -= e.deltaY * 0.003;
       markInteraction();
       snapToNearest();
     }
@@ -236,7 +297,7 @@
   });
 
   stage.addEventListener('click', (e) => {
-    if (Math.abs(e.clientX - startX) > 10) return; // Ignore drag clicks
+    if (Math.abs(e.clientX - mouseStartX) > 8) return;
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects(cards);
     if (hits.length > 0) {
@@ -251,7 +312,7 @@
     entries.forEach(entry => {
       isVisible = entry.isIntersecting;
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.05 });
   observer.observe(stage);
 
   function animate() {
@@ -262,11 +323,10 @@
       targetAngle -= autoRotateSpeed;
     }
 
-    // Smooth lerp rotation
     currentAngle += (targetAngle - currentAngle) * 0.08;
     carouselGroup.rotation.y = currentAngle;
 
-    // Raycast check
+    // Hover detection
     if (!isDragging && mouse.x > -1) {
       raycaster.setFromCamera(mouse, camera);
       const hits = raycaster.intersectObjects(cards);
@@ -279,8 +339,8 @@
           }
           hoveredCard = topHit;
         }
-        hoveredCard.userData.targetScale = 1.12;
-        hoveredCard.userData.targetY = 0.18;
+        hoveredCard.userData.targetScale = 1.1;
+        hoveredCard.userData.targetY = 0.15;
       } else if (hoveredCard) {
         hoveredCard.userData.targetScale = 1.0;
         hoveredCard.userData.targetY = 0;
@@ -294,10 +354,9 @@
       mesh.scale.lerp(new THREE.Vector3(u.targetScale, u.targetScale, 1), 0.1);
       mesh.position.y = THREE.MathUtils.lerp(mesh.position.y, u.targetY, 0.1);
 
-      // Cards further back are softly dimmed for realistic depth
       const worldPos = new THREE.Vector3();
       mesh.getWorldPosition(worldPos);
-      const distFromFront = (worldPos.z - 0.2); // front card is at highest z
+      const distFromFront = (worldPos.z - 0.2);
       const brightness = THREE.MathUtils.clamp(1.0 + distFromFront * 0.15, 0.45, 1.0);
       mesh.material.color.setRGB(brightness, brightness * 0.98, brightness * 0.96);
     });
@@ -308,9 +367,40 @@
   animate();
 
   // Resize handler
+  let resizeTimer;
   window.addEventListener('resize', () => {
-    camera.aspect = stage.clientWidth / stage.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(stage.clientWidth, stage.clientHeight);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      updateCameraDistance();
+      renderer.setSize(stage.clientWidth, stage.clientHeight);
+    }, 100);
   });
+
+  // --- GALLERY VIEW SWITCHER (3D vs GRID) ---
+  const switch3D = document.getElementById('view-mode-3d');
+  const switchGrid = document.getElementById('view-mode-grid');
+  const wrapper3D = document.querySelector('.gallery-3d-wrapper');
+  const gridView = document.querySelector('.gallery-editorial-grid');
+
+  if (switch3D && switchGrid && wrapper3D && gridView) {
+    switch3D.addEventListener('click', () => {
+      switch3D.classList.add('active');
+      switchGrid.classList.remove('active');
+      switch3D.setAttribute('aria-selected', 'true');
+      switchGrid.setAttribute('aria-selected', 'false');
+      wrapper3D.style.display = 'block';
+      gridView.style.display = 'none';
+      updateCameraDistance();
+      renderer.setSize(stage.clientWidth, stage.clientHeight);
+    });
+
+    switchGrid.addEventListener('click', () => {
+      switchGrid.classList.add('active');
+      switch3D.classList.remove('active');
+      switchGrid.setAttribute('aria-selected', 'true');
+      switch3D.setAttribute('aria-selected', 'false');
+      wrapper3D.style.display = 'none';
+      gridView.style.display = 'grid';
+    });
+  }
 })();
